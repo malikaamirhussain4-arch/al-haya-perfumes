@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AL HAYA ATTAR & PERFUMES - Premium Fragrances</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        function PerfumeStore() {
+            const [cart, setCart] = useState([]);
+            const [showCart, setShowCart] = useState(false);
+            const [products] = useState([
+                {
+                    id: 1,
+                    name: 'Oud - Pure Attar',
+                    price: { min: 500, max: 1500 },
+                    type: 'Pure Attar',
+                    description: 'Premium traditional oud attar with rich, woody notes',
+                    image: '🌹'
+                },
+                {
+                    id: 2,
+                    name: 'Rose Perfume',
+                    price: { min: 600, max: 1200 },
+                    type: 'Perfume',
+                    description: 'Luxurious rose fragrance with floral essence',
+                    image: '🌸'
+                },
+                {
+                    id: 3,
+                    name: 'Musk Attar',
+                    price: { min: 400, max: 1300 },
+                    type: 'Attar',
+                    description: 'Traditional musk with warm undertones',
+                    image: '✨'
+                },
+                {
+                    id: 4,
+                    name: 'Sandalwood Attar',
+                    price: { min: 700, max: 1600 },
+                    type: 'Attar',
+                    description: 'Pure sandalwood with earthy, smooth notes',
+                    image: '🪵'
+                }
+            ]);
+
+            const addToCart = (product) => {
+                const existingItem = cart.find(item => item.id === product.id);
+                if (existingItem) {
+                    setCart(cart.map(item =>
+                        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                    ));
+                } else {
+                    setCart([...cart, { ...product, quantity: 1, selectedPrice: product.price.min }]);
+                }
+            };
+
+            const removeFromCart = (productId) => {
+                setCart(cart.filter(item => item.id !== productId));
+            };
+
+            const updatePrice = (productId, price) => {
+                setCart(cart.map(item =>
+                    item.id === productId ? { ...item, selectedPrice: price } : item
+                ));
+            };
+
+            const updateQuantity = (productId, qty) => {
+                if (qty === 0) {
+                    removeFromCart(productId);
+                } else {
+                    setCart(cart.map(item =>
+                        item.id === productId ? { ...item, quantity: qty } : item
+                    ));
+                }
+            };
+
+            const cartTotal = cart.reduce((sum, item) => sum + (item.selectedPrice * item.quantity), 0);
+
+            const handleWhatsApp = () => {
+                const cartMessage = cart.map(item => 
+                    `${item.name} - ₹${item.selectedPrice} x ${item.quantity}`
+                ).join('\n');
+                const total = `\n\nTotal: ₹${cartTotal}`;
+                const message = encodeURIComponent(`Hello! I'm interested in:\n\n${cartMessage}${total}`);
+                window.open(`https://wa.me/919596287324?text=${message}`, '_blank');
+            };
+
+            return (
+                <div style={{ background: 'linear-gradient(135deg, #faf8f3 0%, #f5f0f0 100%)', minHeight: '100vh', padding: '0' }}>
+                    <div style={{
+                        background: 'linear-gradient(135deg, #8b4789 0%, #c94e7f 100%)',
+                        color: 'white',
+                        padding: '2rem 1.5rem',
+                        textAlign: 'center',
+                        boxShadow: '0 4px 12px rgba(139, 71, 137, 0.2)'
+                    }}>
+                        <div style={{ fontSize: '32px', marginBottom: '0.5rem' }}>🌹</div>
+                        <h1 style={{ margin: '0 0 0.5rem 0', fontSize: '28px', fontWeight: '500' }}>AL HAYA ATTAR & PERFUMES</h1>
+                        <p style={{ margin: '0', opacity: '0.9', fontSize: '14px' }}>Premium Traditional Fragrances</p>
+                    </div>
+
+                    <div style={{ padding: '1rem', textAlign: 'right', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+                        <button
+                            onClick={() => setShowCart(!showCart)}
+                            style={{
+                                background: '#8b4789',
+                                color: 'white',
+                                border: 'none',
+                                padding: '0.75rem 1.5rem',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.5rem'
+                            }}
+                        >
+                            🛒 Cart ({cart.length})
+                        </button>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: showCart ? '1fr 350px' : '1fr', gap: '1.5rem', padding: '1.5rem', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
+                        
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1.5rem' }}>
+                            {products.map(product => (
+                                <div key={product.id} style={{
+                                    background: 'white',
+                                    borderRadius: '12px',
+                                    padding: '1.5rem',
+                                    boxShadow: '0 2px 8px rgba(139, 71, 137, 0.1)',
+                                    border: '1px solid #e8dfe0'
+                                }}>
+                                    <div style={{ fontSize: '48px', textAlign: 'center', marginBottom: '1rem' }}>{product.image}</div>
+                                    <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '16px', fontWeight: '500', color: '#8b4789' }}>{product.name}</h3>
+                                    <p style={{ margin: '0 0 0.75rem 0', fontSize: '12px', color: '#999' }}>{product.description}</p>
+                                    <div style={{ margin: '1rem 0', padding: '0.75rem', background: '#f5f0f0', borderRadius: '8px', textAlign: 'center' }}>
+                                        <p style={{ margin: '0 0 0.5rem 0', fontSize: '12px', color: '#666' }}>Price Range</p>
+                                        <p style={{ margin: '0', fontSize: '14px', fontWeight: '500', color: '#c94e7f' }}>₹{product.price.min} - ₹{product.price.max}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => addToCart(product)}
+                                        style={{
+                                            width: '100%',
+                                            background: '#c94e7f',
+                                            color: 'white',
+                                            border: 'none',
+                                            padding: '0.75rem',
+                                            borderRadius: '8px',
+                                            cursor: 'pointer',
+                                            fontWeight: '500',
+                                            fontSize: '14px'
+                                        }}
+                                    >
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        {showCart && (
+                            <div style={{
+                                background: 'white',
+                                borderRadius: '12px',
+                                padding: '1.5rem',
+                                boxShadow: '0 2px 8px rgba(139, 71, 137, 0.1)',
+                                border: '1px solid #e8dfe0',
+                                height: 'fit-content',
+                                position: 'sticky',
+                                top: '1rem'
+                            }}>
+                                <h2 style={{ margin: '0 0 1rem 0', fontSize: '16px', fontWeight: '500', color: '#8b4789' }}>Shopping Cart</h2>
+                                
+                                {cart.length === 0 ? (
+                                    <p style={{ textAlign: 'center', color: '#999', fontSize: '14px' }}>Cart is empty</p>
+                                ) : (
+                                    <>
+                                        <div style={{ maxHeight: '350px', overflowY: 'auto', marginBottom: '1rem' }}>
+                                            {cart.map(item => (
+                                                <div key={item.id} style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #e8dfe0' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                                        <span style={{ fontSize: '14px', fontWeight: '500', color: '#333' }}>{item.name}</span>
+                                                        <button
+                                                            onClick={() => removeFromCart(item.id)}
+                                                            style={{ background: 'none', border: 'none', color: '#c94e7f', cursor: 'pointer', fontSize: '12px' }}
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <div style={{ marginBottom: '0.5rem' }}>
+                                                        <label style={{ fontSize: '12px', display: 'block', marginBottom: '0.25rem', color: '#666' }}>Price</label>
+                                                        <select
+                                                            value={item.selectedPrice}
+                                                            onChange={(e) => updatePrice(item.id, parseInt(e.target.value))}
+                                                            style={{
+                                                                width: '100%',
+                                                                padding: '0.5rem',
+                                                                fontSize: '12px',
+                                                                border: '1px solid #e8dfe0',
+                                                                borderRadius: '6px',
+                                                                background: 'white',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            {Array.from({ length: (item.price.max - item.price.min) / 100 + 1 }, (_, i) => item.price.min + i * 100).map(price => (
+                                                                <option key={price} value={price}>₹{price}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+
+                                                    <div style={{ marginBottom: '0.5rem' }}>
+                                                        <label style={{ fontSize: '12px', display: 'block', marginBottom: '0.25rem', color: '#666' }}>Quantity</label>
+                                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                                style={{ flex: 1, padding: '0.4rem', border: '1px solid #e8dfe0', borderRadius: '6px', cursor: 'pointer' }}
+                                                            >
+                                                                −
+                                                            </button>
+                                                            <input
+                                                                type="number"
+                                                                value={item.quantity}
+                                                                onChange={(e) => updateQuantity(item.id, parseInt(e.target.value))}
+                                                                style={{ flex: 1, padding: '0.4rem', border: '1px solid #e8dfe0', borderRadius: '6px', textAlign: 'center', fontSize: '12px' }}
+                                                            />
+                                                            <button
+                                                                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                                style={{ flex: 1, padding: '0.4rem', border: '1px solid #e8dfe0', borderRadius: '6px', cursor: 'pointer' }}
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div style={{ fontSize: '12px', color: '#c94e7f', fontWeight: '500' }}>
+                                                        Total: ₹{item.selectedPrice * item.quantity}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div style={{
+                                            padding: '1rem',
+                                            background: '#f5f0f0',
+                                            borderRadius: '8px',
+                                            marginBottom: '1rem'
+                                        }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: '500', color: '#8b4789' }}>
+                                                <span>Total:</span>
+                                                <span>₹{cartTotal}</span>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={handleWhatsApp}
+                                            style={{
+                                                width: '100%',
+                                                background: '#25D366',
+                                                color: 'white',
+                                                border: 'none',
+                                                padding: '0.75rem',
+                                                borderRadius: '8px',
+                                                cursor: 'pointer',
+                                                fontWeight: '500',
+                                                fontSize: '14px'
+                                            }}
+                                        >
+                                            💬 Order on WhatsApp
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{
+                        background: '#f5f0f0',
+                        padding: '2rem 1.5rem',
+                        textAlign: 'center',
+                        marginTop: '3rem',
+                        borderTop: '1px solid #e8dfe0'
+                    }}>
+                        <p style={{ margin: '0 0 1rem 0', color: '#666', fontSize: '14px' }}>📱 WhatsApp: +91 95962 87324</p>
+                        <p style={{ margin: '0', color: '#999', fontSize: '12px' }}>© 2024 AL HAYA ATTAR & PERFUMES. All rights reserved.</p>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<PerfumeStore />);
+    </script>
+</body>
+</html>
